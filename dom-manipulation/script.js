@@ -75,6 +75,20 @@ function createAddQuoteForm() {
   container.appendChild(importInput);
 
   document.body.appendChild(container);
+
+  // Task 2: Dynamic Content Filtering
+  const filterLabel = document.createElement("label");
+  filterLabel.textContent = "Filter by category: ";
+
+  const categoryFilter = document.createElement("select");
+  categoryFilter.id = "categoryFilter";
+  categoryFilter.addEventListener("change", filterQuotes);
+  
+  filterLabel.appendChild(categoryFilter);
+  document.body.insertBefore(filterLabel, quoteDisplay); // show above quotes
+
+populateCategories();
+
 }
 
 // ✅ Export Quotes function
