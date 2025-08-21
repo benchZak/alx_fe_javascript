@@ -42,3 +42,4 @@ function addQuote() {
 // Event listener for "Show New Quote" button
 newQuoteBtn.addEventListener("click", displayRandomQuote);
 
+
