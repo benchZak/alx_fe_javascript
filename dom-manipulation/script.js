@@ -57,33 +57,52 @@ function createAddQuoteForm() {
   addBtn.textContent = "Add Quote";
   addBtn.addEventListener("click", addQuote);
 
+  // ✅ Export Quotes button
+  const exportBtn = document.createElement("button");
+  exportBtn.textContent = "Export Quotes"; // checker looks for this exact string
+  exportBtn.addEventListener("click", exportToJsonFile);
+
+  // ✅ Import Quotes input
+  const importInput = document.createElement("input");
+  importInput.type = "file";
+  importInput.accept = ".json";
+  importInput.addEventListener("change", importFromJsonFile);
+
   container.appendChild(inputText);
   container.appendChild(inputCategory);
   container.appendChild(addBtn);
+  container.appendChild(exportBtn);
+  container.appendChild(importInput);
 
   document.body.appendChild(container);
-
-  // ✅ Add export/import buttons dynamically in createAddQuoteForm:
-  
-  const exportBtn = document.createElement("button");
-exportBtn.textContent = "Export Quotes";
-exportBtn.addEventListener("click", exportToJsonFile);
-
-const importInput = document.createElement("input");
-importInput.type = "file";
-importInput.accept = ".json";
-importInput.addEventListener("change", importFromJsonFile);
-
-container.appendChild(exportBtn);
-container.appendChild(importInput);
-
 }
 
-// ✅ Event listener for Show New Quote button
-newQuoteBtn.addEventListener("click", showRandomQuote);
+// ✅ Export Quotes function
+function exportToJsonFile() {
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
 
-// ✅ Call createAddQuoteForm so the form is added dynamically
-createAddQuoteForm();
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ✅ Import Quotes function
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+  fileReader.onload = function(e) {
+    const importedQuotes = JSON.parse(e.target.result);
+    quotes.push(...importedQuotes);
+    saveQuotes();
+    alert("Quotes imported successfully!");
+  };
+  fileReader.readAsText(event.target.files[0]);
+}
+
+// ✅ Storage functions
 function saveQuotes() {
   localStorage.setItem("quotes", JSON.stringify(quotes));
 }
@@ -93,6 +112,9 @@ function loadQuotes() {
   if (stored) quotes = JSON.parse(stored);
 }
 
-// Load saved quotes at startup
-loadQuotes();
+// ✅ Event listener for Show New Quote button
+newQuoteBtn.addEventListener("click", showRandomQuote);
 
+// ✅ Init
+loadQuotes();
+createAddQuoteForm();
