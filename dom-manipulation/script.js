@@ -29,6 +29,7 @@ function addQuote() {
   }
 
   quotes.push({ text, category });
+  saveQuotes();   // ✅ Persist to localStorage
 
   // Clear inputs
   document.getElementById("newQuoteText").value = "";
@@ -61,6 +62,21 @@ function createAddQuoteForm() {
   container.appendChild(addBtn);
 
   document.body.appendChild(container);
+
+  // ✅ Add export/import buttons dynamically in createAddQuoteForm:
+  
+  const exportBtn = document.createElement("button");
+exportBtn.textContent = "Export Quotes";
+exportBtn.addEventListener("click", exportToJsonFile);
+
+const importInput = document.createElement("input");
+importInput.type = "file";
+importInput.accept = ".json";
+importInput.addEventListener("change", importFromJsonFile);
+
+container.appendChild(exportBtn);
+container.appendChild(importInput);
+
 }
 
 // ✅ Event listener for Show New Quote button
@@ -68,5 +84,15 @@ newQuoteBtn.addEventListener("click", showRandomQuote);
 
 // ✅ Call createAddQuoteForm so the form is added dynamically
 createAddQuoteForm();
+function saveQuotes() {
+  localStorage.setItem("quotes", JSON.stringify(quotes));
+}
 
+function loadQuotes() {
+  const stored = localStorage.getItem("quotes");
+  if (stored) quotes = JSON.parse(stored);
+}
+
+// Load saved quotes at startup
+loadQuotes();
 
